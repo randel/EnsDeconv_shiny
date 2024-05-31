@@ -259,7 +259,8 @@ tabPanel("Analysis",value = "dc",
 			                              #tableOutput("dctable")%>% withSpinner(),
 			                              # uiOutput("plots") %>% withSpinner(),
 			                              plotOutput("plots") %>% withSpinner(),
-			                              
+			                              plotOutput("heatmap") %>% withSpinner(),
+						      verbatimTextOutput("summaryText"),
 			                              p(""),
 			                              withMathJax()
 			                              #,
@@ -316,7 +317,7 @@ tabPanel("Analysis",value = "dc",
                             br(),
                             #p("ShinyApp created by ", strong("Manqi Cai")," of "),
                             p(strong("University of Pittsburgh")),
-                            p(("Copyright (C) 2021, code licensed "))
+                            p(("Copyright (C) 2024, code licensed "))
                      ))
                      )
 
