@@ -21,7 +21,7 @@ pkgs <- c("shiny",
           "ggpubr",
           "DeconRNASeq",
           "formattable",
-          "shinysky",
+          "pheatmap",
           "shinycssloaders",
           "shinyWidgets",
           "knitr",
@@ -33,6 +33,10 @@ check.packages(pkgs)
 required_packages <- c(
   "EnsDeconv"
 )
+
+if (!requireNamespace("ShinySky", quietly = TRUE)) {
+  devtools::install_github("AnalytixWare/ShinySky")
+}
 
 new.packages <- required_packages[!(required_packages %in% installed.packages()[,"Package"])]
 
