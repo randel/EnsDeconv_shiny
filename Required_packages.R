@@ -26,7 +26,8 @@ pkgs <- c("shiny",
           "shinyWidgets",
           "knitr",
           "markdown",
-          "rintrojs"
+          "rintrojs",
+          "R.utils"
           )
 check.packages(pkgs)
 
