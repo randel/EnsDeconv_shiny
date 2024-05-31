@@ -245,7 +245,16 @@ shinyServer(function(input, output,session){
 
 
    })
-
+        
+   output$summaryText <- renderPrint({
+     res <- dcInput()
+     print(res)
+   })
+   
+   output$heatmap <- renderPlot({
+     res<- dcInput()
+     pheatmap::pheatmap(res[["Ensemble"]],cluster_rows = F, cluster_cols = F)
+   })
 
    # Downloadable csv of selected dataset ----
    output$downloadData <- downloadHandler(
