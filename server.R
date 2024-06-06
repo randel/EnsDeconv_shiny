@@ -141,50 +141,75 @@ shinyServer(function(input, output,session){
       colnames(metaref)[which(colnames(metaref) == refname)] = "deconv_clust" 
       refname <- input$columnssample
       colnames(metaref)[which(colnames(metaref) == refname)] = "SubjectName" 
-    }else if(input$chooseref == "brain"){
-      metaref <- readRDS(paste0("./data/meta_",input$localbrain,".rds"))
-      ref <- readRDS(paste0("./data/ref_",input$localbrain,".rds"))
+    }else if(input$chooseref == "tissue"){
       
-      # Detect whether bulk data contains gene name or Ensembl gene IDs
-      if(sum(unique(sapply(rownames(to_deconv), str_length)) != 15) !=0){
-        library(biomaRt)
-        mart <- useDataset("hsapiens_gene_ensembl", useMart("ensembl"))
-        gene_IDs <- getBM(filters= "ensembl_gene_id", attributes= c("ensembl_gene_id","hgnc_symbol"),
-                          values = rownames(ref), mart= mart)
-        gene_IDs = gene_IDs %>% filter(hgnc_symbol!="")
-        
-        ref = ref[gene_IDs$ensembl_gene_id,]
-        rownames(ref) = gene_IDs$hgnc_symbol
+      ref_list <- readRDS(paste0("./data/",input$localtissue,"_sig.rds"))
+
+      if(input$localtissue == "Brain"){
+        # Detect whether bulk data contains gene name or Ensembl gene IDs
+        if(sum(unique(sapply(rownames(to_deconv), str_length)) != 15) !=0){
+          library(biomaRt)
+          mart <- useDataset("hsapiens_gene_ensembl", useMart("ensembl"))
+          ref_list <- lapply(ref_list, function(cur){
+            gene_IDs <- getBM(filters= "ensembl_gene_id", attributes= c("ensembl_gene_id","hgnc_symbol"),
+                              values = rownames(cur$ref_matrix), mart= mart)
+            gene_IDs = gene_IDs %>% filter(hgnc_symbol!="")
+            
+            cur$ref_matrix = cur$ref_matrix[gene_IDs$ensembl_gene_id,]
+            rownames(cur$ref_matrix) = gene_IDs$hgnc_symbol
+          })
+          
+        }
+      }else if(input$localtissue == "Blood"){
+        if(sum(unique(sapply(rownames(to_deconv), str_length)) != 15) !=0){
+          library(biomaRt)
+          mart <- useDataset("hsapiens_gene_ensembl", useMart("ensembl"))
+          ref_list <- lapply(ref_list, function(cur){
+            gene_IDs <- getBM(filters= "ensembl_gene_id", attributes= c("ensembl_gene_id","hgnc_symbol"),
+                              values = rownames(cur$ref_matrix), mart= mart)
+            gene_IDs = gene_IDs %>% filter(hgnc_symbol!="")
+            
+            cur$ref_matrix = cur$ref_matrix[gene_IDs$ensembl_gene_id,]
+            rownames(cur$ref_matrix) = gene_IDs$hgnc_symbol
+          })
+          
+        }
       }
       
-    }else{
-      metaref <- readRDS(paste0("./data/meta_",input$localblood,".rds"))
-      ref <- readRDS(paste0("./data/ref_",input$localblood,".rds"))
-      # Detect whether bulk data contains gene name or Ensembl gene IDs
-      if(sum(unique(sapply(rownames(to_deconv), str_length)) != 15) !=0){
-        library(biomaRt)
-        mart <- useDataset("hsapiens_gene_ensembl", useMart("ensembl"))
-        gene_IDs <- getBM(filters= "ensembl_gene_id", attributes= c("ensembl_gene_id","hgnc_symbol"),
-                          values = rownames(ref), mart= mart)
-        gene_IDs = gene_IDs %>% filter(hgnc_symbol!="")
-        
-        ref = ref[gene_IDs$ensembl_gene_id,]
-        rownames(ref) = gene_IDs$hgnc_symbol
-      }
+      
     }
+    # else{
+    #   metaref <- readRDS(paste0("./data/meta_",input$localblood,".rds"))
+    #   ref <- readRDS(paste0("./data/ref_",input$localblood,".rds"))
+    #   # Detect whether bulk data contains gene name or Ensembl gene IDs
+    #   if(sum(unique(sapply(rownames(to_deconv), str_length)) != 15) !=0){
+    #     library(biomaRt)
+    #     mart <- useDataset("hsapiens_gene_ensembl", useMart("ensembl"))
+    #     gene_IDs <- getBM(filters= "ensembl_gene_id", attributes= c("ensembl_gene_id","hgnc_symbol"),
+    #                       values = rownames(ref), mart= mart)
+    #     gene_IDs = gene_IDs %>% filter(hgnc_symbol!="")
+    #     
+    #     ref = ref[gene_IDs$ensembl_gene_id,]
+    #     rownames(ref) = gene_IDs$hgnc_symbol
+    #   }
+    # }
     time_limit <- 60*input$time_tolerance
     
     
+    if(input$chooseref != "tissue"){
+      metaref$SamplesNames = colnames(ref)
+      
+      ref_list = list()
+      ref_list$"ref" = list()
+      ref_list$"ref"$ref_matrix = as.matrix(ref)
+      ref_list$"ref"$meta_ref = metaref
+      
+      params = get_params(data_type = input$datatype, data_name = names(testdata$ref_list), n_markers = input$nmrk,Marker.Method = input$mrk,TNormalization = input$norm,CNormalization =input$norm ,dmeths = input$Deconv,Scale = input$scale)
+    }else{
+      params = get_params(data_type = input$datatype, data_name = names(ref_list), n_markers = input$nmrk,Marker.Method = "none",TNormalization = "none",CNormalization ="none" ,dmeths = input$Deconv,Scale = input$scale)
+    }
     
-    metaref$SamplesNames = colnames(ref)
-    
-    ref_list = list()
-    ref_list$"ref" = list()
-    ref_list$"ref"$ref_matrix = as.matrix(ref)
-    ref_list$"ref"$meta_ref = metaref
-    
-    params = get_params(data_type = input$datatype, data_name = "ref", n_markers = input$nmrk,Marker.Method = input$mrk,TNormalization = input$norm,CNormalization =input$norm ,dmeths = input$Deconv,Scale = input$scale)
-    
+
     if(nrow(params)>1){
       #params
       if(input$choosepara == "FALSE"){

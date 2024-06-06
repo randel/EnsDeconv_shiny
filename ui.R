@@ -74,14 +74,20 @@ parameter_tabs <- tabsetPanel(
            fluidRow(column(width = 6, selectInput("columnsref", h4("Select cell type variable"), choices = NULL)%>% helper(colour = "green",type = "inline", content = "Select the variable that correspond to cell type cluster")),
                     column(width = 6,selectInput("columnssample", h4("Select sample ID variable"), choices = NULL)%>% helper(colour = "green",type = "inline", content = "Select the variable that correspond to sample ID")))
   ),
-  tabPanel("brain", 
-           selectInput("localbrain", label = h4("Choose brain reference data"),choices = list("Darmanis","Habib"))%>%
-             helper(colour = "green",type = "inline",size = "m",content = "Choose brain reference data")
-  ),
-  tabPanel("blood",
-           selectInput("localblood", label = h4("Choose blood reference data"),choices = list("lm22","skin_signature"))%>%
-             helper(colour = "green",type = "inline",size = "m",content = "Choose blood reference data")
+  tabPanel("tissue",
+           selectInput("localtissue", label = h4("Choose tissue to inclue multiple references"),choices = list("Brain"))%>%
+             helper(colour = "green",type = "inline",size = "m",content = "Choose tissue to inclue multiple references")
   )
+  # ,
+  # tabPanel("brain", 
+  #          selectInput("localbrain", label = h4("Choose brain reference data"),choices = list("Darmanis","Habib"))%>%
+  #            helper(colour = "green",type = "inline",size = "m",content = "Choose brain reference data")
+  # )
+  # ,
+  # tabPanel("blood",
+  #          selectInput("localblood", label = h4("Choose blood reference data"),choices = list("lm22","skin_signature"))%>%
+  #            helper(colour = "green",type = "inline",size = "m",content = "Choose blood reference data")
+  # )
 )
 
 
@@ -192,16 +198,16 @@ navbarPage(title = div("EnsDeconv (Ensemble Deconvolution)",tagList(a(href = "ht
                                  ),
                                  fluidRow(column(width = 12,
                                                  selectInput("chooseref",h4("References"),
-                                                             choices = c("Select...","Custom" = "custom", "brain references"= "brain", "blood references" = "blood")
+                                                             choices = c("Tissue specific references"= "tissue","Custom" = "custom")
                                                  )%>%
                                                    helper(colour = "green",type = "inline", 
                                                           content = "Custom: upload customized references dataset;
-                                                          <br> brain (blood) references: select existing references"),
+                                                          <br> tissue references: select existing references"),
                                                  parameter_tabs))
                                  #actionButton("updateref", "incorporate external information", class = "btn-info"),
                                  ,fluidRow(column(width = 6, multiInput("Deconv", label = h4("Deconvolution Method"),
                                                                         choices = list("dtangle", "hspe","DSA","CIBERSORT","EPIC","MuSiC","Bisque", "ICeDT","DeconRNASeq","FARDEEP","DCQ"),
-                                                                        selected = c("Bisque","CIBERSORT"))
+                                                                        selected = c("EPIC","CIBERSORT","DCQ"))
                                                   %>% helper(colour = "green",type = "inline", content = "Select the deconvolution methods that you want to apply")),
                                            column(width = 6,  multiInput("mrk", label = h4("Marker Gene Approach"),
                                                                          choices = list("none"  , "t","wilcox","combined","p.value","regression"),
