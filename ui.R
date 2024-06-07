@@ -343,7 +343,7 @@ navbarPage(title = div("EnsDeconv (Ensemble Deconvolution)",tagList(a(href = "ht
                              img(src="University_of_Pittsburgh_Logo_CMYK_Primary_3-Color.png" ,  width = 300),
                              br(),
                              br(),
-                             p("A user-friendly R Shiny app for ensemble cellular deconvolution to estimate cellular fractions from bulk omics, developed by Dr. Jiebiao Wang's group. Creator: Manqi Cai; Contributor: Liang You."),
+                             p("A user-friendly R Shiny app for ensemble cellular deconvolution to estimate cellular fractions from bulk omics, developed by Dr. Jiebiao Wang's group. Creator: Manqi Cai; Contributors: Liang You and Tianyuzhou (Jenny) Liang."),
                              p(strong("Group Info:")),
                              p("Jiebiao Wang"),
                              p("Manqi Cai"),
