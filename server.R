@@ -275,35 +275,35 @@ shinyServer(function(input, output,session){
   output$plots <- renderPlot({
     
     res<- dcInput()
-    n <- length(res)
-    print(res)
-    plot_output_list <- lapply(1:n, function(i) {
-      
-      plotname <- names(res)[[i]]
-      plotOutput(plotname, height = 580, width = 550)
-      
-      
-    })
-    
-    
-    do.call(tagList, plot_output_list)
-    df <- list()
-    for (i in 1:length(res)) {
-      u <- intersect(rownames(res[[1]]),rownames(res[[i]]))
-      d <- data.frame(Subject = u,Method = names(res)[i],res[[i]][u,]/rowSums(res[[i]][u,]))
-      df[[i]] <-reshape2::melt(d,id.vars = c('Subject','Method'))
-    }
-    df <- bind_rows(df)
+    # n <- length(res)
+    # print(res)
+    # plot_output_list <- lapply(1:n, function(i) {
+    #   
+    #   plotname <- names(res)[[i]]
+    #   plotOutput(plotname, height = 580, width = 550)
+    #   
+    #   
+    # })
+    # 
+    # 
+    # do.call(tagList, plot_output_list)
+    # df <- list()
+    # for (i in 1:length(res)) {
+    u <- intersect(rownames(res[[1]]),rownames(res[["Ensemble"]]))
+    d <- data.frame(Subject = u,Method = "EnsDeconv",res[["Ensemble"]][u,]/rowSums(res[["Ensemble"]][u,]))
+    df <-reshape2::melt(d,id.vars = c('Subject','Method'))
+    # }
+    # df <- bind_rows(df)
     names(df) <- c("Subject","Method","CellType","p_hat")
     
-    ggboxplot(df,x = "CellType", y ="p_hat",color = "CellType")+facet_wrap(~Method)+ylab("Estimated cell type proportion")+xlab("Cell type")+color_palette("jco")
-    
+    ggboxplot(df,x = "CellType", y ="p_hat",color = "CellType")+ylab("EnsDeconv estimated cell type proportion")+xlab("Cell type")+color_palette("jco")
+  
     
   })
   
   output$summaryText <- renderPrint({
     res <- dcInput()
-    print(res)
+    print(res[["Ensemble"]])
   })
   
   output$heatmap <- renderPlot({

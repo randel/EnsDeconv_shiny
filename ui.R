@@ -76,7 +76,7 @@ parameter_tabs <- tabsetPanel(
   ),
   tabPanel("tissue",
            selectInput("localtissue", label = h4("Choose tissue to inclue multiple references"),choices = list("Brain"))%>%
-             helper(colour = "green",type = "inline",size = "m",content = "Choose tissue to inclue multiple references")
+             helper(colour = "green",type = "inline",size = "m",content = "Choose tissue to inclue multiple references. For brain, currently, we have included 12 pre-processed brain references from http://stab.comp-sysbio.org.")
   )
   # ,
   # tabPanel("brain", 
@@ -96,13 +96,14 @@ parallel_parameter_tabs <- tabsetPanel(
   type = "hidden",
   tabPanel("FALSE"),
   tabPanel("TRUE",
-           fluidRow(column(width = 12,numericInput("ncore", label = h4("Num. of cores"),value = 2)
+           fluidRow(column(width = 12,numericInput("ncore", label = h4("Num. of cores"),value = 5)
                            %>% helper(colour = "green",type = "inline", content = "The number of cores to use for parallel execution"))
            )
   ))
 
 
-navbarPage(title = div("EnsDeconv (Ensemble Deconvolution)",tagList(a(href = "https://publichealth.pitt.edu/biostatistics/", style = "color:#606060", tags$img(src='University_of_Pittsburgh_Logo_CMYK_Primary_3-Color.png',height = 30,width =60)))),
+navbarPage(title = "EnsDeconv (Ensemble Deconvolution)",
+             #div("EnsDeconv (Ensemble Deconvolution)",tagList(a(href = "https://publichealth.pitt.edu/biostatistics/", style = "color:#606060", tags$img(src='University_of_Pittsburgh_Logo_CMYK_Primary_3-Color.png',height = 30,width =60)))),
            
            theme = shinytheme("yeti"),
            fluid = TRUE,
@@ -145,19 +146,19 @@ navbarPage(title = div("EnsDeconv (Ensemble Deconvolution)",tagList(a(href = "ht
                                     hr(),
                                     helpText(strong("- Analysis -" , style="color:green ; font-family: 'times'; font-size:20pt ; font-type:bold" ) ) ,
                                     helpText(HTML("<a onclick=","customHref('dc')" ,">",
-                                                  "Analysis","</a>")),
+                                                  "Analysis","</a>"))#,
                                     # helpText(HTML("<a onclick=","customHref('braindc')" ,">",
                                     #               "Brain Data","</a>")),
                                     # helpText(HTML("<a onclick=","customHref('blooddc')" ,">",
                                     #               "Blood Data","</a>")),
-                                    
-                                    hr(),
-                                    p("We summarized following methods:"),
-                                    helpText(strong("- Deconvolution Method -" , style="color:green ; font-family: 'times'; font-size:20pt ; font-type:bold" ) ) ,
-                                    helpText(HTML("<a onclick=","customHref('prf')" ,">",
-                                                  "Partial Reference Free Method","</a>")),
-                                    helpText(HTML("<a onclick=","customHref('rb')" ,">",
-                                                  "Reference Based Method","</a>"))
+                                    # 
+                                    # hr(),
+                                    # p("We summarized following methods:"),
+                                    # helpText(strong("- Deconvolution Method -" , style="color:green ; font-family: 'times'; font-size:20pt ; font-type:bold" ) ) ,
+                                    # # helpText(HTML("<a onclick=","customHref('prf')" ,">",
+                                    # #               "Partial Reference Free Method","</a>")),
+                                    # helpText(HTML("<a onclick=","customHref('rb')" ,">",
+                                    #               "Reference Based Method","</a>"))
                                     
                              ))
                     
@@ -176,14 +177,14 @@ navbarPage(title = div("EnsDeconv (Ensemble Deconvolution)",tagList(a(href = "ht
                     #   ),
                     #   parameter_tabs,
                     # ),
-                    sidebarPanel(strong("Required"),
+                    sidebarPanel(#strong("Required"),
                                  fluidRow(
                                    column(width = 12,
                                           selectInput("data_source", label = h4("Bulk Data"),
                                                       choices = list("Demo Brain Bulk Data" = "demo","Custom" = "custom")) %>%
                                             helper(colour = "green", type = "inline", 
                                                    content = "Select the data source: upload custom data or use demo data<br>
-                                                   When using defult Demo Brain Bulk Data, please choose brain references then Darmanis")
+                                                   When using the default Demo Brain Bulk Data, brain references will be automatically selected.")
                                    )
                                  ),
                                  conditionalPanel(
@@ -193,7 +194,7 @@ navbarPage(title = div("EnsDeconv (Ensemble Deconvolution)",tagList(a(href = "ht
                                                     accept = c("text/csv", "text/comma-separated-values,text/plain", ".csv", ".rds", ".RData", ".txt")) %>%
                                             helper(colour = "green", type = "inline", 
                                                    content = "Upload the file of bulk data you want to deconvolve (.csv, .rds or .txt), <br>
-                                                   rows are genes and columns are samples")
+                                                   rows are genes and columns are samples.")
                                    )
                                  ),
                                  fluidRow(column(width = 12,
@@ -202,22 +203,22 @@ navbarPage(title = div("EnsDeconv (Ensemble Deconvolution)",tagList(a(href = "ht
                                                  )%>%
                                                    helper(colour = "green",type = "inline", 
                                                           content = "Custom: upload customized references dataset;
-                                                          <br> tissue references: select existing references"),
+                                                          <br> tissue references: select existing references."),
                                                  parameter_tabs))
                                  #actionButton("updateref", "incorporate external information", class = "btn-info"),
                                  ,fluidRow(column(width = 6, multiInput("Deconv", label = h4("Deconvolution Method"),
-                                                                        choices = list("dtangle", "hspe","DSA","CIBERSORT","EPIC","MuSiC","Bisque", "ICeDT","DeconRNASeq","FARDEEP","DCQ"),
-                                                                        selected = c("EPIC","CIBERSORT","DCQ"))
-                                                  %>% helper(colour = "green",type = "inline", content = "Select the deconvolution methods that you want to apply")),
+                                                                        choices = list("dtangle", "hspe","DSA","CIBERSORT","EPIC","FARDEEP","DCQ"),
+                                                                        selected = c("CIBERSORT"))
+                                                  %>% helper(colour = "green",type = "inline", content = "Select the deconvolution methods that you want to apply.")),
                                            column(width = 6,  multiInput("mrk", label = h4("Marker Gene Approach"),
-                                                                         choices = list("none"  , "t","wilcox","combined","p.value","regression"),
-                                                                         selected = "t")
-                                                  %>% helper(colour = "green",type = "inline", content = "Choose the marker gene selection methods that you want to apply"))),
+                                                                         choices = list("none"  , "t","wilcox","combined","p.value"),
+                                                                         selected = "none")
+                                                  %>% helper(colour = "green",type = "inline", content = "Choose the marker gene selection methods that you want to apply."))),
                                  
                                  
                                  
                                  fluidRow(column(width = 6,numericInput("nmrk", label = h4("Num. of Marker Gene"),value = 50)
-                                                 %>% helper(colour = "green",type = "inline", content = "Enter the number of markers")),
+                                                 %>% helper(colour = "green",type = "inline", content = "Enter the number of markers.")),
                                           column(width = 6,selectInput("datatype", label = h4("Type of reference data"),choices = list("singlecell-rna","microarray"))%>%
                                                    helper(colour = "green",type = "inline",size = "m",content = "Choose the type of reference data"))),
                                  fluidRow(column(width = 6,			                                 checkboxGroupButtons("scale", label = h4("Type of scaling approach"),choices = c("log","linear"),
@@ -229,7 +230,7 @@ navbarPage(title = div("EnsDeconv (Ensemble Deconvolution)",tagList(a(href = "ht
                                                                                                                                 lib = "glyphicon")),
                                                                                                                     selected = "linear")%>%
                                                    helper(colour = "green",type = "inline",size = "m",
-                                                          content = "Choose the scaling approach of bulk & reference data")),
+                                                          content = "Choose the scaling approach of bulk & reference data.")),
                                           column(width = 6,  checkboxGroupButtons("norm", label = h4("Type of normalization approach"),choices = c("CPM","TPM","QN","none"),
                                                                                   status = "primary",
                                                                                   checkIcon = list(
@@ -239,10 +240,10 @@ navbarPage(title = div("EnsDeconv (Ensemble Deconvolution)",tagList(a(href = "ht
                                                                                               lib = "glyphicon")),
                                                                                   selected = "none")%>%
                                                    helper(colour = "green",type = "inline",size = "m",
-                                                          content = "Choose the Normalization approach of bulk & reference data"))),
+                                                          content = "Choose the Normalization approach of bulk & reference data."))),
                                  fluidRow(column(width = 12,
                                                  selectInput("choosepara",h4("Parallel Computing"),
-                                                             choices = c("False"= "FALSE","True" = "TRUE")
+                                                             choices = c("True" = "TRUE","False"= "FALSE")
                                                  )%>%
                                                    helper(colour = "green",type = "inline", content = "Use parallel computing or not"),
                                                  parallel_parameter_tabs)),
@@ -259,7 +260,9 @@ navbarPage(title = div("EnsDeconv (Ensemble Deconvolution)",tagList(a(href = "ht
                                  #actionButton("updateref", "incorporate external information", class = "btn-info"),
                                  ,
                                  actionButton("dcupdate", "Run", class = "btn-info"),
-                                 downloadButton("downloadData", "Download results")
+                                 downloadButton("downloadData", "Download results") %>% 
+                                   helper(colour = "green", type = "inline", 
+                                          content = "The output will be a list containing two elements: - EnsDeconv: The output of the EnsDeconv algorithm. - allgene_res: A list of results from each scenario analyzed.")
                                  # ,hr(),
                                  # strong("Selected"),
                                  # switchInput(
@@ -282,20 +285,23 @@ navbarPage(title = div("EnsDeconv (Ensemble Deconvolution)",tagList(a(href = "ht
                                  # conditionalPanel(condition="$('html').hasClass('shiny-busy')",
                                  #                  tags$div("Loading...",id="loadmessage"))
                     ),
-                    mainPanel(strong("Summary "),
+                    mainPanel(strong("EnsDeconv output "),
                               #p("DeconvolutionMethods_MarkerGeneSelection_Scale_Normalization: "),
                               #tableOutput("dctable")%>% withSpinner(),
                               # uiOutput("plots") %>% withSpinner(),
-                              plotOutput("plots") %>% withSpinner(),
-                              plotOutput("heatmap") %>% withSpinner(),
-                              verbatimTextOutput("summaryText"),
+                              p("Distribution of estimated fraction"),
+                              plotOutput("plots",width = "50%") %>% withSpinner(),
+                              p("Heatmap of estimated fraction"),
+                              plotOutput("heatmap",width = "50%") %>% withSpinner(),
+                              p("Estimated fraction"),
+                              verbatimTextOutput("summaryText")%>% withSpinner(),
                               p(""),
                               withMathJax()
                               #,
                               #strong("References")
                               
                     )
-           )
+           ),
            # # Brain Data ----
            # 		           tabPanel("Brain Data",
            # 		                    value = "braindc",
@@ -313,22 +319,22 @@ navbarPage(title = div("EnsDeconv (Ensemble Deconvolution)",tagList(a(href = "ht
            # 		                    helpText(strong("Blood Data" , style="color:green ; font-family: 'times'; font-size:20pt ; font-type:bold" ) ),
            # 		                    strong("References")
            # 		           )
-           ,navbarMenu("Deconvolution Method",
-                       tabPanel("Partial Reference Free Method (Marker guided)",
-                                value = "prf",
-                                helpText(strong("Partial Reference Free Method" , style="color:green ; font-family: 'times'; font-size:20pt ; font-type:bold" ) ),
-                                includeMarkdown("RMD/prf.Rmd"),
-                                strong("References")
-                       ),
-                       tabPanel("Reference Based Method",
-                                value = "rb",
-                                helpText(strong("Reference Based Method" , style="color:green ; font-family: 'times'; font-size:20pt ; font-type:bold" ) ),
-                                includeMarkdown("RMD/rb.Rmd"),
-                                #includeMarkdown("Tabls.Rmd"),
-                                strong("References")
-                                
-                       )
-           ),
+           # ,navbarMenu("Deconvolution Method",
+           #             # tabPanel("Partial Reference Free Method (Marker guided)",
+           #             #          value = "prf",
+           #             #          helpText(strong("Partial Reference Free Method" , style="color:green ; font-family: 'times'; font-size:20pt ; font-type:bold" ) ),
+           #             #          includeMarkdown("RMD/prf.Rmd"),
+           #             #          strong("References")
+           #             # ),
+           #             tabPanel("Reference Based Method",
+           #                      value = "rb",
+           #                      helpText(strong("Reference Based Method" , style="color:green ; font-family: 'times'; font-size:20pt ; font-type:bold" ) ),
+           #                      includeMarkdown("RMD/rb.Rmd"),
+           #                      #includeMarkdown("Tabls.Rmd"),
+           #                      strong("References")
+           #                      
+           #             )
+           # ),
            tabPanel("About",
                     fluidRow(align="center",
                              style="opacity:0.9; background-color: white ;margin-top: 0px; width: 100%;",
@@ -343,13 +349,15 @@ navbarPage(title = div("EnsDeconv (Ensemble Deconvolution)",tagList(a(href = "ht
                              img(src="University_of_Pittsburgh_Logo_CMYK_Primary_3-Color.png" ,  width = 300),
                              br(),
                              br(),
-                             p("A user-friendly R Shiny app for ensemble cellular deconvolution to estimate cellular fractions from bulk omics, developed by Dr. Jiebiao Wang's group. Creator: Manqi Cai; Contributors: Liang You and Tianyuzhou (Jenny) Liang."),
-                             p(strong("Group Info:")),
-                             p("Jiebiao Wang"),
-                             p("Manqi Cai"),
-                             p("Tianyuzhou (Jenny) Liang"),
-                             p("Liang You"),
-                             p("Guanru Chen"),
+                             p("A user-friendly R Shiny app for ensemble cellular deconvolution to estimate cellular fractions from bulk omics, developed by Dr. Jiebiao Wang's group. "),
+                             p("Creator: Manqi Cai."),
+                             p("Contributors: Liang You and Tianyuzhou (Jenny) Liang."),
+                             # p(strong("Group Info:")),
+                             # p("Jiebiao Wang"),
+                             # p("Manqi Cai"),
+                             # p("Tianyuzhou (Jenny) Liang"),
+                             # p("Liang You"),
+                             # p("Guanru Chen"),
                              br(),
                              p(strong("University of Pittsburgh")),
                              p(("Copyright (C) 2024, code licensed ")),

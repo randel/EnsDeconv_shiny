@@ -50,11 +50,23 @@ Analysis: When raw counts are uploaded, the data is then analyzed by the app. Th
 
 The gene names between bulk data and reference data should be consistent or have intersection.
 
-## Output 
-You will view boxplots for each deconvolution methods, and each boxplot is titled as "DeconvolutionMethods_MarkerGeneSelection_Scale_Normalization". For our ensemble methods, we simply use "Ensemble" as title.
+#### Meta Data for Reference Data
+If you choose to upload reference data instead of using in-house datasets, you will also need to upload metadata for the reference data. The metadata should include sample names for the reference (column names of the reference) and deconvolution clusters, such as cell types.
 
-You can also download estimated cell type fractions by clicking “Download Results”:
+### Deconvolution important factors
+For a detailed description of important factors in deconvolution, please refer to our original [paper](https://academic.oup.com/bioinformatics/article-abstract/38/11/3004/6570586?redirectedFrom=fulltext).
+
+
+## Output 
+You will find a boxplot, heatmap, and table displaying the estimated fraction from EnsDeconv.
+
+Once you have chose all the paramters, click "Run" to start analysis.
+
+You can also download estimated cell type fractions (including EnsDeconv and all other scenarios) by clicking “Download Results”:
+
+
+
 ![](../figs/download.png)
 
-Example file: https://github.com/randel/EnsDeconv
+
 
