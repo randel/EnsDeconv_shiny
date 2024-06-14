@@ -96,7 +96,7 @@ parallel_parameter_tabs <- tabsetPanel(
   type = "hidden",
   tabPanel("FALSE"),
   tabPanel("TRUE",
-           fluidRow(column(width = 12,numericInput("ncore", label = h4("Num. of cores"),value = 5)
+           fluidRow(column(width = 12, numericInput("ncore", label = h4("Num. of cores"),value = 8)
                            %>% helper(colour = "green",type = "inline", content = "The number of cores to use for parallel execution"))
            )
   ))
