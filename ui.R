@@ -36,7 +36,7 @@ library(shinycssloaders)
 library(shinyWidgets)
 library(edgeR)
 library(R.utils)
-
+library(openxlsx)
 
 appCSS <- "
 #loading-content {
@@ -75,8 +75,23 @@ parameter_tabs <- tabsetPanel(
                     column(width = 6,selectInput("columnssample", h4("Select sample ID variable"), choices = NULL)%>% helper(colour = "green",type = "inline", content = "Select the variable that correspond to sample ID")))
   ),
   tabPanel("tissue",
-           selectInput("localtissue", label = h4("Choose tissue to inclue multiple references"),choices = list("Brain"))%>%
-             helper(colour = "green",type = "inline",size = "m",content = "Choose tissue to inclue multiple references. For brain, currently, we have included 12 pre-processed brain references from http://stab.comp-sysbio.org.")
+           selectInput("localtissue", label = h4("Choose tissue to inclue multiple references"),choices = list("Brain","Blood"))%>%
+             helper(colour = "green",type = "inline",size = "m",content = "Choose tissue to inclue multiple references. For brain, currently, we have 
+                    included 12 pre-processed brain references from http://stab.comp-sysbio.org."),
+           
+           # Conditional panel to show additional brain reference choices when "Brain" is selected
+           conditionalPanel(
+             condition = "input.localtissue == 'Brain'",
+             checkboxGroupInput("brainReferences", label = h4("Choose brain references"), 
+                                choices = list("Nowakowski", "Darmanis", "Zhong", 
+                                               "Fan", "Li", "Lake", 
+                                               "LaManno", "Habib", "Welch", 
+                                               "Liu", "Onorati", "Hodge"),
+                                selected = list("Nowakowski", "Darmanis", "Zhong", 
+                                                "Fan", "Li", "Lake", 
+                                                "LaManno", "Habib", "Welch", 
+                                                "Liu", "Onorati", "Hodge"))
+           )
   )
   # ,
   # tabPanel("brain", 
@@ -260,6 +275,8 @@ navbarPage(title = "EnsDeconv (Ensemble Deconvolution)",
                                  #actionButton("updateref", "incorporate external information", class = "btn-info"),
                                  ,
                                  actionButton("dcupdate", "Run", class = "btn-info"),
+                                 # Select input for download file type
+                                 selectInput("dfileType", label = h4("Choose file type for download"), choices = list("Excel","RData")),
                                  downloadButton("downloadData", "Download results") %>% 
                                    helper(colour = "green", type = "inline", 
                                           content = "The output will be a list containing two elements: - EnsDeconv: The output of the EnsDeconv algorithm. - allgene_res: A list of results from each scenario analyzed.")

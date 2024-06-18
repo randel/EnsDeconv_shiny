@@ -146,6 +146,8 @@ shinyServer(function(input, output,session){
       ref_list <- readRDS(paste0("./data/",input$localtissue,"_sig.rds"))
 
       if(input$localtissue == "Brain"){
+        ref_list <- ref_list[input$brainReferences]
+
         # Detect whether bulk data contains gene name or Ensembl gene IDs
         if(sum(unique(sapply(rownames(to_deconv), str_length)) != 15) !=0){
           library(biomaRt)
@@ -312,19 +314,50 @@ shinyServer(function(input, output,session){
   })
   
   # Downloadable csv of selected dataset ----
+  # output$downloadData <- downloadHandler(
+  #   filename = function() {
+  #     "outcome.RData"
+  #     
+  #   },
+  #   content = function(file) {
+  #     resout = dcInput()
+  #     resout = lapply(resout, as.data.frame)
+  #     resout <- lapply(resout, function(x) rownames_to_column(x, "sample"))
+  #     save(resout, file = file)
+  #   }
+  # )
   output$downloadData <- downloadHandler(
     filename = function() {
-      "outcome.RData"
-      
+      if (input$dfileType == "RData") {
+        "results.RData"
+      } else {
+        "results.xlsx"
+      }
     },
     content = function(file) {
       resout = dcInput()
       resout = lapply(resout, as.data.frame)
       resout <- lapply(resout, function(x) rownames_to_column(x, "sample"))
-      save(resout, file = file)
+      names(resout)[names(resout) == "Ensemble"] <- "EnsDeconv"
+      
+      if ("EnsDeconv" %in% names(resout)) {
+        resout <- c(EnsDeconv = list(resout[["EnsDeconv"]]), resout[names(resout) != "EnsDeconv"])
+      }
+      
+      resout <- bind_rows(lapply(names(resout), function(name) {
+        df <- resout[[name]]
+        df$scenario <- name
+        df
+      }), .id = "Index")
+      if (input$dfileType == "RData") {
+        save(resout, file = file)
+      } else if (input$dfileType == "Excel") {
+        lapply(seq_along(resout), function(i) {
+          write.xlsx(resout, file = file)
+        })
+      }
     }
   )
-  
   
   
   data <- reactive({
