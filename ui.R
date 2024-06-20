@@ -82,15 +82,15 @@ parameter_tabs <- tabsetPanel(
            # Conditional panel to show additional brain reference choices when "Brain" is selected
            conditionalPanel(
              condition = "input.localtissue == 'Brain'",
-             checkboxGroupInput("brainReferences", label = h4("Choose brain references"), 
-                                choices = list("Nowakowski", "Darmanis", "Zhong", 
-                                               "Fan", "Li", "Lake", 
-                                               "LaManno", "Habib", "Welch", 
-                                               "Liu", "Onorati", "Hodge"),
-                                selected = list("Nowakowski", "Darmanis", "Zhong", 
-                                                "Fan", "Li", "Lake", 
-                                                "LaManno", "Habib", "Welch", 
-                                                "Liu", "Onorati", "Hodge"))
+             multiInput("brainReferences", label = h4("Choose brain references"), 
+                                choices = list("Nowakowski et al., Science, 2017", "Darmanis et al., PNAS, 2015", "Zhong et al., Nature, 2018", 
+                                               "Fan et al., Cell Research, 2018", "Li et al., Science, 2018", "Lake et al., nature biotechnology, 2017", 
+                                               "La Manno et al., Cell, 2016", "Habib et al., Nat Methods, 2017", "Welch JD, et al., Cell, 2019", 
+                                               "Liu et al., Genome Biology, 2016", "Onorati et al., Cell Rep, 2016", "Hodge et al., Nature, 2019"),
+                                selected = list("Nowakowski et al., Science, 2017", "Darmanis et al., PNAS, 2015", "Zhong et al., Nature, 2018", 
+                                                "Fan et al., Cell Research, 2018", "Li et al., Science, 2018", "Lake et al., nature biotechnology, 2017", 
+                                                "La Manno et al., Cell, 2016", "Habib et al., Nat Methods, 2017", "Welch JD, et al., Cell, 2019", 
+                                                "Liu et al., Genome Biology, 2016", "Onorati et al., Cell Rep, 2016", "Hodge et al., Nature, 2019"))
            )
   )
   # ,
@@ -236,7 +236,7 @@ navbarPage(title = "EnsDeconv (Ensemble Deconvolution)",
                                                  %>% helper(colour = "green",type = "inline", content = "Enter the number of markers.")),
                                           column(width = 6,selectInput("datatype", label = h4("Type of reference data"),choices = list("singlecell-rna","microarray"))%>%
                                                    helper(colour = "green",type = "inline",size = "m",content = "Choose the type of reference data"))),
-                                 fluidRow(column(width = 6,			                                 checkboxGroupButtons("scale", label = h4("Type of scaling approach"),choices = c("log","linear"),
+                                 fluidRow(column(width = 6,			                                 checkboxGroupButtons("scale", label = h4("Type of transformation approach"),choices = c("log","linear"),
                                                                                                                     status = "primary",
                                                                                                                     checkIcon = list(
                                                                                                                       yes = icon("ok", 

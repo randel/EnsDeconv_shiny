@@ -146,7 +146,8 @@ shinyServer(function(input, output,session){
       ref_list <- readRDS(paste0("./data/",input$localtissue,"_sig.rds"))
 
       if(input$localtissue == "Brain"){
-        ref_list <- ref_list[input$brainReferences]
+        sub_ref <- sub(" .*", "", input$brainReferences)
+        ref_list <- ref_list[sub_ref]
 
         # Detect whether bulk data contains gene name or Ensembl gene IDs
         if(sum(unique(sapply(rownames(to_deconv), str_length)) != 15) !=0){
