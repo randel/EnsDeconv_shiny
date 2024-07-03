@@ -256,7 +256,7 @@ shinyServer(function(input, output,session){
       }else{
         tryCatch({
           withTimeout({
-            res <- gen_all_res_list(count_bulk = as.matrix(to_deconv), meta_bulk = NULL, ref_list = ref_list, true_frac =NULL, outpath =NULL, ncore =input$ncore, parallel_comp = T, params = params)          
+            res <- gen_all_res_list(count_bulk = as.matrix(to_deconv), enableFileSaving=FALSE, ref_list = ref_list, true_frac =NULL, outpath =NULL, ncore =input$ncore, parallel_comp = T, params = params)          
           },timeout = time_limit)
         }, TimeoutException = function(ex) {
           stop("Function execution timed out!")
@@ -292,6 +292,7 @@ shinyServer(function(input, output,session){
     # do.call(tagList, plot_output_list)
     # df <- list()
     # for (i in 1:length(res)) {
+    if(length(res)==1){res[["Ensemble"]]<-res[[1]]}
     u <- intersect(rownames(res[[1]]),rownames(res[["Ensemble"]]))
     d <- data.frame(Subject = u,Method = "EnsDeconv",res[["Ensemble"]][u,]/rowSums(res[["Ensemble"]][u,]))
     df <-reshape2::melt(d,id.vars = c('Subject','Method'))
@@ -306,11 +307,13 @@ shinyServer(function(input, output,session){
   
   output$summaryText <- renderPrint({
     res <- dcInput()
+    if(length(res)==1){res[["Ensemble"]]<-res[[1]]}
     print(res[["Ensemble"]])
   })
   
   output$heatmap <- renderPlot({
     res<- dcInput()
+    if(length(res)==1){res[["Ensemble"]]<-res[[1]]}
     pheatmap::pheatmap(res[["Ensemble"]],cluster_rows = F, cluster_cols = F)
   })
   
