@@ -27,7 +27,7 @@ pkgs <- c("shiny",
           "knitr",
           "markdown",
           "rintrojs",
-          "R.utils"，
+          "R.utils",
           "openxlsx"
           )
 check.packages(pkgs)
