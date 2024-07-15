@@ -85,11 +85,11 @@ parameter_tabs <- tabsetPanel(
              multiInput("brainReferences", label = h4("Choose brain references"), 
                                 choices = list("Nowakowski et al., Science, 2017", "Darmanis et al., PNAS, 2015", "Zhong et al., Nature, 2018", 
                                                "Fan et al., Cell Research, 2018", "Li et al., Science, 2018", "Lake et al., nature biotechnology, 2017", 
-                                               "La Manno et al., Cell, 2016", "Habib et al., Nat Methods, 2017", "Welch JD, et al., Cell, 2019", 
+                                               "LaManno et al., Cell, 2016", "Habib et al., Nat Methods, 2017", "Welch JD, et al., Cell, 2019", 
                                                "Liu et al., Genome Biology, 2016", "Onorati et al., Cell Rep, 2016", "Hodge et al., Nature, 2019"),
                                 selected = list("Nowakowski et al., Science, 2017", "Darmanis et al., PNAS, 2015", "Zhong et al., Nature, 2018", 
                                                 "Fan et al., Cell Research, 2018", "Li et al., Science, 2018", "Lake et al., nature biotechnology, 2017", 
-                                                "La Manno et al., Cell, 2016", "Habib et al., Nat Methods, 2017", "Welch JD, et al., Cell, 2019", 
+                                                "LaManno et al., Cell, 2016", "Habib et al., Nat Methods, 2017", "Welch JD, et al., Cell, 2019", 
                                                 "Liu et al., Genome Biology, 2016", "Onorati et al., Cell Rep, 2016", "Hodge et al., Nature, 2019"))
            )
   )
@@ -222,13 +222,13 @@ navbarPage(title = "EnsDeconv (Ensemble Deconvolution)",
                                                  parameter_tabs))
                                  #actionButton("updateref", "incorporate external information", class = "btn-info"),
                                  ,fluidRow(column(width = 6, multiInput("Deconv", label = h4("Deconvolution Method"),
-                                                                        choices = list("dtangle", "hspe","DSA","CIBERSORT","EPIC","FARDEEP","DCQ"),
+                                                                        choices = list("dtangle", "hspe","CIBERSORT","EPIC","FARDEEP","DCQ"),
                                                                         selected = c("CIBERSORT"))
                                                   %>% helper(colour = "green",type = "inline", content = "Select the deconvolution methods that you want to apply.")),
                                            column(width = 6,  multiInput("mrk", label = h4("Marker Gene Approach"),
-                                                                         choices = list("none"  , "t","wilcox","combined","p.value"),
+                                                                         choices = list("none"  , "p.value","wilcox","t","combined"),
                                                                          selected = "none")
-                                                  %>% helper(colour = "green",type = "inline", content = "Choose the marker gene selection methods that you want to apply."))),
+                                                  %>% helper(colour = "green",type = "inline", content = "Choose the marker gene selection methods that you want to apply. Combione and t may not be applicable"))),
                                  
                                  
                                  
