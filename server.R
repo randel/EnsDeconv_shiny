@@ -207,7 +207,7 @@ shinyServer(function(input, output,session){
       ref_list$"ref"$ref_matrix = as.matrix(ref)
       ref_list$"ref"$meta_ref = metaref
       
-      params = get_params(data_type = input$datatype, data_name = names(testdata$ref_list), n_markers = input$nmrk,Marker.Method = input$mrk,TNormalization = input$norm,CNormalization =input$norm ,dmeths = input$Deconv,Scale = input$scale)
+      params = get_params(data_type = input$datatype, data_name = "ref", n_markers = input$nmrk,Marker.Method = input$mrk,TNormalization = input$norm,CNormalization =input$norm ,dmeths = input$Deconv,Scale = input$scale)
     }else{
       params = get_params(data_type = input$datatype, data_name = names(ref_list), n_markers = input$nmrk,Marker.Method = "none",TNormalization = "none",CNormalization ="none" ,dmeths = input$Deconv,Scale = input$scale)
     }
