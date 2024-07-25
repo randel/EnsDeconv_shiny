@@ -225,10 +225,25 @@ navbarPage(title = "EnsDeconv (Ensemble Deconvolution)",
                                                                         choices = list("dtangle", "hspe","CIBERSORT","EPIC","FARDEEP","DCQ"),
                                                                         selected = c("CIBERSORT"))
                                                   %>% helper(colour = "green",type = "inline", content = "Select the deconvolution methods that you want to apply.")),
-                                           column(width = 6,  multiInput("mrk", label = h4("Marker Gene Approach"),
-                                                                         choices = list("none"  , "p.value","wilcox","t","combined"),
-                                                                         selected = "none")
-                                                  %>% helper(colour = "green",type = "inline", content = "Choose the marker gene selection methods that you want to apply. Combione and t may not be applicable"))),
+                                           column(width = 6,
+                                                  conditionalPanel(
+                                                    condition = "input.chooseref == 'custom'",
+                                                    multiInput("mrk", label = h4("Marker Gene Approach"),
+                                                               choices = list("none", "p.value", "wilcox", "t", "combined"),
+                                                               selected = "none") %>%
+                                                      helper(colour = "green", type = "inline", 
+                                                             content = "Choose the marker gene selection methods that you want to apply. Combine and t may not be applicable")
+                                                  ),
+                                                  conditionalPanel(
+                                                    condition = "input.chooseref != 'custom'",
+                                                    multiInput("mrk_disabled", label = h4("Marker Gene Approach"),
+                                                               choices = list("none"),
+                                                               selected = "none",
+                                                               options = list(disabled = TRUE)) %>%
+                                                      helper(colour = "green", type = "inline", 
+                                                             content = "Marker Gene Approach is not available for tissue specific references and is set to 'none'.")
+                                                  )
+                                           )),
                                  
                                  
                                  
@@ -236,8 +251,11 @@ navbarPage(title = "EnsDeconv (Ensemble Deconvolution)",
                                                  %>% helper(colour = "green",type = "inline", content = "Enter the number of markers.")),
                                           column(width = 6,selectInput("datatype", label = h4("Type of reference data"),choices = list("singlecell-rna","microarray"))%>%
                                                    helper(colour = "green",type = "inline",size = "m",content = "Choose the type of reference data"))),
-                                 fluidRow(column(width = 6,			                                 checkboxGroupButtons("scale", label = h4("Type of transformation approach"),choices = c("log","linear"),
-                                                                                                                    status = "primary",
+                                 fluidRow(column(width = 6,
+                                                 checkboxGroupButtons("scale", 
+                                                                      label = h4("Type of transformation approach"),
+                                                                      choices = c("log","linear"),
+                                                                      status = "primary",
                                                                                                                     checkIcon = list(
                                                                                                                       yes = icon("ok", 
                                                                                                                                  lib = "glyphicon"),
@@ -264,8 +282,8 @@ navbarPage(title = "EnsDeconv (Ensemble Deconvolution)",
                                                  parallel_parameter_tabs)),
                                  fluidRow(
                                    column(width = 6,
-                                          numericInput("time_tolerance", label = h4("Time Tolerance (minutes)"),
-                                                       value = 5, min = 1, max = 60, step = 1) %>%
+                                          numericInput("time_tolerance", label = h4("Time Tolerance (seconds)"),
+                                                       value = 300, min = 1, max = 3600, step = 1) %>%
                                             helper(colour = "green", type = "inline", 
                                                    content = "Specify the time tolerance for running EnsDeconv. Default is 5 minutes.
                                                    <br>If exceed, get ERROR: Function execution timed out!")
@@ -314,6 +332,7 @@ navbarPage(title = "EnsDeconv (Ensemble Deconvolution)",
                               verbatimTextOutput("summaryText")%>% withSpinner(),
                               p(""),
                               withMathJax()
+                              
                               #,
                               #strong("References")
                               

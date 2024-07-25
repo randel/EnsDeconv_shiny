@@ -196,7 +196,7 @@ shinyServer(function(input, output,session){
     #     rownames(ref) = gene_IDs$hgnc_symbol
     #   }
     # }
-    time_limit <- 60*input$time_tolerance
+
     
     
     if(input$chooseref != "tissue"){
@@ -207,32 +207,19 @@ shinyServer(function(input, output,session){
       ref_list$"ref"$ref_matrix = as.matrix(ref)
       ref_list$"ref"$meta_ref = metaref
       
-      params = get_params(data_type = input$datatype, data_name = "ref", n_markers = input$nmrk,Marker.Method = input$mrk,TNormalization = input$norm,CNormalization =input$norm ,dmeths = input$Deconv,Scale = input$scale)
+      params = get_params(data_type = input$datatype, data_name = "ref", n_markers = input$nmrk,Marker.Method = input$mrk,TNormalization = input$norm,CNormalization =input$norm ,dmeths = input$Deconv,Scale = input$scale,time_limit = input$time_tolerance)
     }else{
-      params = get_params(data_type = input$datatype, data_name = names(ref_list), n_markers = input$nmrk,Marker.Method = "none",TNormalization = "none",CNormalization ="none" ,dmeths = input$Deconv,Scale = input$scale)
+      params = get_params(data_type = input$datatype, data_name = names(ref_list), n_markers = input$nmrk,Marker.Method = "none",TNormalization = "none",CNormalization ="none" ,dmeths = input$Deconv,Scale = input$scale,time_limit = input$time_tolerance)
     }
     
 
     if(nrow(params)>1){
       #params
       if(input$choosepara == "FALSE"){
-        tryCatch({
-          withTimeout({
             res <- EnsDeconv(count_bulk = as.matrix(to_deconv), ref_list = ref_list, ncore = 4, parallel_comp = F, params = params,inrshiny = T)
-          },timeout = time_limit)
-        }, TimeoutException = function(ex) {
-          stop("Function execution timed out!")
-        })
         
       }else{
-        tryCatch({
-          withTimeout({
             res <- EnsDeconv(count_bulk = as.matrix(to_deconv), ref_list = ref_list, ncore = input$ncore, parallel_comp = T, params = params)
-          },timeout = time_limit)
-        }, TimeoutException = function(ex) {
-          stop("Function execution timed out!")
-        })
-        
       }
       
       
@@ -245,22 +232,10 @@ shinyServer(function(input, output,session){
       res_p
     }else{
       if(input$choosepara == "FALSE"){
-        tryCatch({
-          withTimeout({
             res <- gen_all_res_list_rshiny(count_bulk = as.matrix(to_deconv), meta_bulk = NULL, ref_list = ref_list, true_frac =NULL, outpath =NULL, ncore =4, parallel_comp = F, params = params)
-          }, timeout = time_limit)
-        }, TimeoutException = function(ex) {
-          stop("Function execution timed out!")
-        })
         
       }else{
-        tryCatch({
-          withTimeout({
             res <- gen_all_res_list(count_bulk = as.matrix(to_deconv), enableFileSaving=FALSE, ref_list = ref_list, true_frac =NULL, outpath =NULL, ncore =input$ncore, parallel_comp = T, params = params)          
-          },timeout = time_limit)
-        }, TimeoutException = function(ex) {
-          stop("Function execution timed out!")
-        })
       }
       ind = sapply(res, function(x){
         length(x[["a"]][["p_hat"]][[1]])
